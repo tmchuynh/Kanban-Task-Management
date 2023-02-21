@@ -27,11 +27,7 @@ body {
 }
 
 .overlay-bg {
-    background:
-        radial-gradient(farthest-side at bottom left, var(--icon-board-bg), #fff0),
-        radial-gradient(farthest-side at top left, var(--list-working), #fff0),
-        radial-gradient(farthest-corner at bottom right, var(--icon-new-task), #fff0),
-        radial-gradient(farthest-corner at top right, var(--list-done), #fff0);
+    background: black;
     position: fixed;
     width: 102%;
     height: 100%;
