@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="Public/css/main.css">
+    </head>
+    <body>
+        <div class="overlay-bg" id="bg-image"></div>
+<header>
+	<div id="totalTask"></div>
+
+	<div id="btns">
+		<div class="btnAdd">
+			<button id="addToDo">&#10010;</button>
+		</div>
+		<div class="btnUrg">
+			<button id="addUrgent">&nbsp;</button>
+		</div>
+		<div id="deleteItem">
+			<ul id="delete-list" ondrop="drop(event, this);delTaskDrop()" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+			</ul>
+		</div>
+	</div>
+
+	<div class="options">
+		<div id="toggleOptions">
+			<button id="btnOptions" onclick="openCloseOptions()"></button>
+			<div class="optionsToggle">
+				<span><span id="openOptions">OPEN</span> OPTIONS</span>
+			</div>
+		</div>
+		<div class="imageBg">
+			<button id="boardBg"></button>
+			<div class="bgs" id="bgOptions">
+				<div>BG IMAGE</div><span>MOUNTAIN</span><span>CLIMBING</span><span>COAST</span><span>SPACE</span><span>CODE</span><span>URL</span><span>NONE</span>
+				<div id="byUrl"><input type="text" placeholder="url" id="urlImage"><button id="submitUrl" onclick="getUrl()">OK</button></div>
+			</div>
+		</div>
+		<div class="boardHeight">
+			<button id="boardFull" onclick="changeListHeight(this.id)"></button>
+			<div class="heightToggle">
+				<span><span id="textHeight">FULL</span> HEIGHT</span>
+			</div>
+		</div>
+		<div class="boardOpacity">
+			<div class="selector">
+				<span>OPACITY</span>
+				<input id="boardOpac" type="range" min="0" max="10" value="5" step="1" oninput="showOpac(this.value)" onchange="showOpac(this.value)">
+			</div>
+		</div>
+		<div class="deleteWarnig showWng">
+			<button id="optionCfrm" onclick="checkIfCnfr()"></button>
+			<div class="warningToggle">
+				<span id="textWarning">HIDE</span> WARNING
+			</div>
+		</div>
+		<div class="deleteOptions">
+			<button id="optionOptns" onclick="delOptions()"></button>
+			<div class="deleteToggle"><span>DELETE</span> OPTIONS</div>
+		</div>
+	</div>
+</header>
+
+<div id="myLists">
+	<div id="to-do">
+		<h3>To Do <span></span></h3>
+		<ul id="ul-todo" class="section" ondrop="drop(event, this)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+			<li id="li-0003" draggable="true" ondragstart="drag(event)" ontouchstart="drag(event)" class="sample"><span class="txt">Add "touch events" for tablet and mobile devices.</span><span class="idTask">0003</span><a class="up" href="#"></a><a class="down" href="#"></a><a class="delete" onclick="delTask(event, this.parentNode)" href="#"></a></li>
+			<li id="li-0006" draggable="true" ondragstart="drag(event)" ontouchstart="drag(event)" class="sample"><span class="txt">Add new options:<br>· background blur<br>· background darken </span><span class="idTask">0006</span><a class="up" href="#"></a><a class="down" href="#"></a><a class="delete" onclick="delTask(event, this.parentNode)" href="#"></a></li>
+		</ul>
+	</div>
+	<div id="work-in">
+		<h3>Working <span></span></h3>
+		<ul id="ul-working" class="section" ondrop="drop(event, this)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+			<li id="li-0004" draggable="true" ondragstart="drag(event)" ontouchstart="drag(event)" class="sample"><span class="txt">Add capability to reorder the tasks inside a list (only with arrows right now).</span><span class="idTask">0004</span><a class="up" href="#"></a><a class="down" href="#"></a><a class="delete" onclick="delTask(event, this.parentNode)" href="#"></a></li>
+		</ul>
+	</div>
+	<div id="do-ne">
+		<h3>Done <span></span></h3>
+		<ul id="ul-done" class="section" ondrop="drop(event, this)" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+			<li id="li-0001" draggable="true" ondragstart="drag(event)" ontouchstart="drag(event)" class="sample"><span class="txt">Publish "Josetxu Kanban Board" on Codepen.</span><span class="idTask">0001</span><a class="up" href="#"></a><a class="down" href="#"></a><a class="delete" onclick="delTask(event, this.parentNode)" href="#"></a></li>
+			<li id="li-0005" draggable="true" ondragstart="drag(event)" ontouchstart="drag(event)" class="sample"><span class="txt">Improving background image functionality for the board.</span><span class="idTask">0005</span><a class="up" href="#"></a><a class="down" href="#"></a><a class="delete" onclick="delTask(event, this.parentNode)" href="#"></a></li>
+			<li id="li-0002" draggable="true" ondragstart="drag(event)" ontouchstart="drag(event)" class="sample"><span class="txt">Add a pencil icon to "Describe the Task..." text.</span><span class="idTask">0002</span><a class="up" href="#"></a><a class="down" href="#"></a><a class="delete" onclick="delTask(event, this.parentNode)" href="#"></a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- MODAL -->
+<div id="modalOverlay"></div>
+<div id="modalBox">
+	<p id="modalDesc">Describe the Task...</p>
+	<textarea id="taskText"></textarea>
+	<button id="taskButton">Ok</button>
+	<span id="modalClose">Cancel</span>
+</div>
+
+<!-- CONFIRM -->
+<div id="confirmDelete"></div>
+<div id="confirmBox">
+	<p><span id="confirmTitle">THE TASK</span> WILL BE DELETED...</p>
+	<div><input id="dontShowAgain" type="checkbox" /><label for="dontShowAgain">DON'T SHOW THIS MESSAGE AGAIN</label></div>
+	<button id="confirmBtn">DELETE</button>
+	<button id="confirmCls">CANCEL</button>
+</div>
+<div id="confirmUrgent">
+	<p><span id="numTaskUrg"></span> TASK<span id="pluralTsk">S</span> WITHIN THE URGENT LIST WILL BE DELETED TOO...</p>
+	<div><input id="dontShowAgainUrgent" type="checkbox" /><label for="dontShowAgainUrgent">DON'T SHOW THIS MESSAGE AGAIN</label></div>
+	<button id="confirmUrgentBtn">REMOVE ANYWAY</button>
+	<button id="confirmUrgentCls">CANCEL</button>
+</div>
+
+<footer>
+	<div class="l-footer">
+
+	</div>
+	<div class="r-footer">
+		<span>
+			<button id="impBrd" onclick="importBoard()"><span>IMPORT BOARD</span></button>
+			<span id="getFile" style="display:none;"><input type="file" id="impFile"></span>
+		</span>
+		<span>
+			<button id="expBrd" onclick="exportBoard()" href="#"><span>EXPORT BOARD</span></button><a id="expHidden" href="#">&nbsp;</a>
+		</span>
+	</div>
+</footer>
+
+<div id="helpContent">
+
+	<div class="helpTitle">Help Guide <span id="helpClose"></span></div>
+
+	<div class="infoMenu">
+		<div>Menu</div>
+		<div class="infoLine totalTasksInfo">Show total number of tasks in whole board. </div>
+		<div class="infoLine newTaskInfo">Add New task inside "To Do" list. </div>
+		<div class="infoLine urgentListInfo">Create or remove "Urgent" list. </div>
+		<div class="infoLine deleteTaskInfo">Drop one task here to remove it or click to remove all tasks. </div>
+		<div class="infoLine optionsMenuInfo">Open or close the options menu. </div>
+	</div>
+	<div class="infoOptions">
+		<div>Options</div>
+		<div class="infoLine bgImgInfo">Select background image or link yours by url.</div>
+		<div class="infoLine adjustHeightInfo">Adjust the height of the list or set full height (only desktop view). </div>
+		<div class="infoLine opacityInfo">Select opacity level for the list background. </div>
+		<div class="infoLine warningInfo">Show or hide warning when remove tasks (showed by default). </div>
+		<div class="infoLine deleteOptionsInfo">Clear all saved options (tasks not included). </div>
+	</div>
+	<div class="infoFooter">
+		<div>Footer</div>
+		<div class="infoLine josetxuInfo">Josetxu Kanban Board created by <a href="https://josetxu.com" target="_blank">Josetxu</a>.</div>
+		<div class="infoLine helpInfo">Show or hide the help guide (that what are you reading right now). </div>
+		<div class="infoLine exportInfo">Export whole board with all tasks and options in a text file. </div>
+		<div class="infoLine importInfo">Import whole board with all tasks and options from a text file. </div>
+	</div>
+	<div class="infoSave">
+		<div>Save</div>
+		<div class="infoLine saveInfo">JKB uses localStorage object to save the tasks and the selected options. </div>
+		<div class="infoLine savedInfo">When an option changes, or create, relocate or remove a task, all auto saved. </div>
+		<div class="infoLine storageInfo">Local storage allows to save the data in browser, not beyond. </div>
+		<div class="infoLine byFileInfo">If you want to move your board data you can exporting and importing by file. </div>
+	</div>
+</div>
+        <script src="Public/js/function.js"></script>
+        <script src="Public/js/app.js"></script>
+    </body>
+</html>
